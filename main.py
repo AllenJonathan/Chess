@@ -20,6 +20,7 @@ board.place_pieces()
 moving = False
 stop = False
 initial_square = None
+image = None
 
 clock = pygame.time.Clock()
 
@@ -30,5 +31,5 @@ while not stop:
         if event.type == pygame.QUIT:
             stop = True
     board.draw_board()
-    moving, initial_square = f.move(screen, board, moving, initial_square)
+    moving, initial_square, image = f.move(screen, board, moving, initial_square, image)
     pygame.display.flip()

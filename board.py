@@ -81,40 +81,34 @@ class Board:
         elif square.is_hinted and square.piece:
             square.draw_capture_hint(self.screen)
 
-    def square_is_empty(self, pos):
-        # pos is a tuple of (x,y)
-        x, y = pos
-        if self.position[y][x] == '--':
-            return True
-        return False
-
-    def move_piece(self, x1, y1, x2, y2):
+    def update_piece_position(self, pos1, pos2):
+        x1, y1 = pos1
+        x2, y2 = pos2
         piece = self.position[y1][x1]
         self.position[y2][x2] = piece
         self.position[y1][x1] = '--'
 
-    def update_board(self, pos1, pos2):
+    def update_square_data(self, pos1, pos2):
         x1, y1 = pos1
         x2, y2 = pos2
-        self.move_piece(x1, y1, x2, y2)
         sqr_1_piece = self.data[y1][x1].piece
         self.data[y2][x2].piece = sqr_1_piece
         self.data[y1][x1].piece = None
 
+    def update_piece(self, pos1, pos2):
+        self.update_piece_position(pos1, pos2)
+        self.update_square_data(pos1, pos2)
+
     def print(self):
         for col in self.position:
+            print()
             for sqr in col:
                 print(sqr, end=" ")
             print()
-
-    def print_data(self):
-        for col in self.data:
-            for sqr in col:
-                print(sqr, sqr.color)
+        print("")
 
 
 class Square:
-
     hinted_image = pygame.image.load("E:/Projects/Chess/res/others/black_circle.png")
     hinted_capture_image = pygame.image.load("E:/Projects/Chess/res/others/black_ring.png")
 
@@ -173,13 +167,10 @@ class Square:
     def draw_capture_hint(self, screen):
         x = self.x + gd.square_length // 2 + 1
         y = self.y + gd.square_length // 2 + 3
-        center = (x,y)
+        center = (x, y)
         diameter = gd.square_length * 1.2
         self.hinted_capture_image.set_alpha(60)
         image = pygame.transform.smoothscale(self.hinted_capture_image, (diameter, diameter))
         rect = image.get_rect()
         rect.center = center
         screen.blit(image, rect)
-
-
-
