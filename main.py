@@ -4,6 +4,7 @@ import pygame
 import game_data as gd
 import game_functions as f
 from board import Board
+from move import Move
 
 pygame.init()
 pygame.display.set_caption("Chess")
@@ -16,14 +17,11 @@ screen = pygame.display.set_mode((gd.board_length, gd.board_length))
 board = Board(screen)
 board.set_up_board()
 board.place_pieces()
-
-moving = False
-stop = False
-initial_square = None
-image = None
+move_engine = Move(screen, board)
 
 clock = pygame.time.Clock()
 
+stop = False
 
 while not stop:
     clock.tick(gd.FPS)
@@ -31,5 +29,7 @@ while not stop:
         if event.type == pygame.QUIT:
             stop = True
     board.draw_board()
-    moving, initial_square, image = f.move(screen, board, moving, initial_square, image)
+    move_engine.move()
+    if gd.game_over:
+        f.display_game_over(screen)
     pygame.display.flip()

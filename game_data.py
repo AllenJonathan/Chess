@@ -1,5 +1,5 @@
 # constants
-FPS = 100
+FPS = 60
 
 # colors
 white = (255, 255, 255)
@@ -24,5 +24,11 @@ game_positions = []
 # lengths
 board_length = 0
 square_length = 0
+
+# castling
+white_castle_long = True
+white_castle_short = True
+black_castle_long = True
+black_castle_short = True
 
 

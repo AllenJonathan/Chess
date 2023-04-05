@@ -1,9 +1,13 @@
+import os
 import pygame
 import game_data as gd
 from pieces import Rook, Knight, Bishop, Queen, King, Pawn
 
 
 class Board:
+    """
+    Contains
+    """
 
     def __init__(self, screen):
         self.screen = screen
@@ -85,6 +89,7 @@ class Board:
         x1, y1 = pos1
         x2, y2 = pos2
         piece = self.position[y1][x1]
+        self.update_castling_flags(piece, pos1)
         self.position[y2][x2] = piece
         self.position[y1][x1] = '--'
 
@@ -96,8 +101,9 @@ class Board:
         self.data[y1][x1].piece = None
 
     def update_piece(self, pos1, pos2):
-        self.update_piece_position(pos1, pos2)
-        self.update_square_data(pos1, pos2)
+        if pos1 != pos2:
+            self.update_piece_position(pos1, pos2)
+            self.update_square_data(pos1, pos2)
 
     def print(self):
         for col in self.position:
@@ -107,15 +113,35 @@ class Board:
             print()
         print("")
 
+    @staticmethod
+    def update_castling_flags(piece, pos):
+        if piece == 'bK':
+            gd.black_castle_long = False
+            gd.black_castle_short = False
+        if piece == 'wK':
+            gd.white_castle_long = False
+            gd.white_castle_short = False
+        if piece == 'bR':
+            if pos == (0, 0):
+                gd.black_castle_long = False
+            else:
+                gd.black_castle_short = False
+        if piece == 'wR':
+            if pos == (0, 7):
+                gd.white_castle_long = False
+            else:
+                gd.white_castle_short = False
+
 
 class Square:
-    hinted_image = pygame.image.load("E:/Projects/Chess/res/others/black_circle.png")
-    hinted_capture_image = pygame.image.load("E:/Projects/Chess/res/others/black_ring.png")
+    hinted_image = pygame.image.load(os.getcwd() + "/res/others/black_circle.png")
+    hinted_capture_image = pygame.image.load(os.getcwd() + "/res/others/black_ring.png")
 
     def __init__(self, id, color, x, y):
         self.id = id
         self.x = x
         self.y = y
+        self.pos = (int(id[0]), int(id[1]))
         self.default_color = color
         self.piece = None
         self.is_active = False
@@ -141,11 +167,11 @@ class Square:
         else:
             return self.default_color
 
-    def toggle_active(self):
-        if self.is_active:
-            self.is_active = False
-        else:
-            self.is_active = True
+    def set_active(self):
+        self.is_active = True
+
+    def set_inactive(self):
+        self.is_active = False
 
     def toggle_hint(self):
         if self.is_hinted:
