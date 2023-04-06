@@ -36,29 +36,30 @@ class Board:
                 square_color = self.toggle_color(square_color)
 
     def place_pieces(self):
-        # places pieces in initial position
+        # places pieces in according to position
         c = 0
         r = 0
         for col in self.data:
             r = 0
             for square in col:
                 pos = self.position[c][r]
-                if pos != '--':
-                    color = pos[0]
-                    piece = pos[1]
-                    if piece == 'R':
-                        new_piece = Rook(color)
-                    elif piece == 'N':
-                        new_piece = Knight(color)
-                    elif piece == 'B':
-                        new_piece = Bishop(color)
-                    elif piece == 'Q':
-                        new_piece = Queen(color)
-                    elif piece == 'K':
-                        new_piece = King(color)
-                    elif piece == 'p':
-                        new_piece = Pawn(color)
-                    square.piece = new_piece
+                color = pos[0]
+                piece = pos[1]
+                if piece == '-':
+                    new_piece = None
+                elif piece == 'R':
+                    new_piece = Rook(color)
+                elif piece == 'N':
+                    new_piece = Knight(color)
+                elif piece == 'B':
+                    new_piece = Bishop(color)
+                elif piece == 'Q':
+                    new_piece = Queen(color)
+                elif piece == 'K':
+                    new_piece = King(color)
+                elif piece == 'p':
+                    new_piece = Pawn(color)
+                square.piece = new_piece
                 r += 1
             c += 1
 
@@ -89,7 +90,6 @@ class Board:
         x1, y1 = pos1
         x2, y2 = pos2
         piece = self.position[y1][x1]
-        self.update_castling_flags(piece, pos1)
         self.position[y2][x2] = piece
         self.position[y1][x1] = '--'
 
@@ -112,25 +112,6 @@ class Board:
                 print(sqr, end=" ")
             print()
         print("")
-
-    @staticmethod
-    def update_castling_flags(piece, pos):
-        if piece == 'bK':
-            gd.black_castle_long = False
-            gd.black_castle_short = False
-        if piece == 'wK':
-            gd.white_castle_long = False
-            gd.white_castle_short = False
-        if piece == 'bR':
-            if pos == (0, 0):
-                gd.black_castle_long = False
-            else:
-                gd.black_castle_short = False
-        if piece == 'wR':
-            if pos == (0, 7):
-                gd.white_castle_long = False
-            else:
-                gd.white_castle_short = False
 
 
 class Square:

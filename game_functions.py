@@ -262,3 +262,53 @@ def update_castling_rights(piece, pos1):
             gd.black_castle_long = False
         elif pos1 == (7, 0):
             gd.black_castle_short = False
+
+
+def update_en_passant(piece, pos1, pos2):
+    if piece.name == 'wp':
+        y = pos1[1] - pos2[1]
+        if y == 2:
+            gd.black_en_passant = pos1[0]
+            return None
+    elif piece.name == 'bp':
+        y = pos1[1] - pos2[1]
+        if y == -2:
+            gd.white_en_passant = pos1[0]
+            return None
+    gd.white_en_passant = -1
+    gd.black_en_passant = -1
+
+
+def check_and_en_passant(board, piece, pos1, pos2):
+    x1, y1 = pos1
+    x2, y2 = pos2
+    wl = (x1-1,3)
+    wr = (x1+1,3)
+    bl = (x1-1,4)
+    br = (x1+1,4)
+    white_left = y1 == 3 and (x1-1,y1-1) == (x2,y2)
+    white_right = y1 == 3 and (x1+1,y1-1) == (x2,y2)
+    black_left = y1 == 4 and (x1-1, y1+1) == (x2, y2)
+    black_right = y1 == 4 and (x1+1, y1+1) == (x2, y2)
+    print(wl, wr, bl, br)
+    if piece.name == 'wp':
+        if white_left:
+            print(wl[1], wl[0])
+            board.update_piece(pos1, pos2)
+            board.position[wl[1]][wl[0]] = '--'
+            board.print()
+        elif white_right:
+            board.update_piece(pos1, pos2)
+            board.position[wr[1]][wr[0]] = '--'
+    elif piece.name == 'bp':
+        if black_left:
+            board.update_piece(pos1, pos2)
+            board.position[bl[1]][bl[0]] = '--'
+        elif black_right:
+            board.update_piece(pos1, pos2)
+            board.position[br[1]][br[0]] = '--'
+    move_made = piece.name in ['wp', 'bp'] and (white_left or white_right or black_right or black_left)
+    if move_made:
+        board.place_pieces()
+        return True
+    return False

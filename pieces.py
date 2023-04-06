@@ -226,17 +226,17 @@ class Pawn(Piece):
             a2 = (x, y - 2)
             b1 = (x - 1, y - 1)
             b2 = (x + 1, y - 1)
-            Pawn.get_moves(position, available_moves, 'w', y, a1, a2, b1, b2)
+            Pawn.get_moves(position, available_moves, 'w', x, y, a1, a2, b1, b2)
         elif color == 'b':
             a1 = (x, y + 1)
             a2 = (x, y + 2)
             b1 = (x - 1, y + 1)
             b2 = (x + 1, y + 1)
-            Pawn.get_moves(position, available_moves, 'b', y, a1, a2, b1, b2)
+            Pawn.get_moves(position, available_moves, 'b', x,  y, a1, a2, b1, b2)
         return available_moves
 
     @staticmethod
-    def get_moves(position, available_moves, color, y, a1, a2, b1, b2):
+    def get_moves(position, available_moves, color, x, y, a1, a2, b1, b2):
         opp_color = 'w'
         if color == 'w':
             opp_color = 'b'
@@ -256,6 +256,18 @@ class Pawn(Piece):
             available_moves.append(b1)
         if -1 < b2x < 8 and -1 < b2y < 8 and position[b2y][b2x][0] == opp_color:
             available_moves.append(b2)
+        # en passant
+        if color == 'w':
+            if gd.white_en_passant == x + 1 and y == 3 and position[y-1][x+1] == '--':
+                available_moves.append(b2)
+            elif gd.white_en_passant == x - 1 and y == 3 and position[y-1][x-1] == '--':
+                available_moves.append(b1)
+        elif color == 'b':
+            if gd.black_en_passant == x + 1 and y == 4 and position[y+1][x+1] == '--':
+                available_moves.append(b2)
+            elif gd.black_en_passant == x - 1 and y == 4 and position[y+1][x-1] == '--':
+                available_moves.append(b1)
+
 
 
 pieces_dict = {

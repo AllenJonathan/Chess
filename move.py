@@ -45,18 +45,22 @@ class Move:
                 # move made
                 f.remove_checkmate(cls.board)
                 if f.check_and_castle(cls.board, piece, pos1, pos2, moves):
-                    print('tob')
+                    pass
+                elif f.check_and_en_passant(cls.board, piece, pos1, pos2):
+                    print('en passant')
+                    pass
                 else:
                     f.update_castling_rights(piece, pos1)
                     cls.board.update_piece(pos1, pos2)
-                    # check for pawn promotion
-                    if piece.name == 'wp' and pos2[1] == 0:
-                        cls.board.position[pos2[1]][pos2[0]] = 'wQ'
-                        cls.board.place_pieces()
-                        print(cls.board.position)
-                    elif piece.name == 'bp' and pos2[1] == 7:
-                        cls.board.position[pos2[1]][pos2[0]] = 'bQ'
-                        cls.board.place_pieces()
+                f.update_en_passant(piece, pos1, pos2)
+                # check for pawn promotion
+                if piece.name == 'wp' and pos2[1] == 0:
+                    cls.board.position[pos2[1]][pos2[0]] = 'wQ'
+                    cls.board.place_pieces()
+                    print(cls.board.position)
+                elif piece.name == 'bp' and pos2[1] == 7:
+                    cls.board.position[pos2[1]][pos2[0]] = 'bQ'
+                    cls.board.place_pieces()
                 # changes after move
                 cls.wrap_up_after_move(pos1, pos2)
 

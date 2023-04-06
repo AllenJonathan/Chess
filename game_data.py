@@ -31,4 +31,8 @@ white_castle_short = True
 black_castle_long = True
 black_castle_short = True
 
+# en passant
+white_en_passant = -1
+black_en_passant = -1
+
 
