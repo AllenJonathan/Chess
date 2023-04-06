@@ -187,11 +187,34 @@ def checkmate_filter(position, pos, available_moves):
 
 
 def update_piece(position, pos1, pos2):
+    # castling temporarily
     x1, y1 = pos1
     x2, y2 = pos2
     piece = position[y1][x1]
-    position[y2][x2] = piece
-    position[y1][x1] = '--'
+    if piece == 'wK' and pos1 == (4, 7):
+        # white
+        if pos2 == (6, 7) and gd.white_castle_short:
+            # short
+            position[7][6], position[7][5] = 'wK', 'wR'
+            position[7][7], position[7][4] = '--', '--'
+        elif pos2 == (2, 7) and gd.white_castle_long:
+            # long
+            position[7][2], position[7][3] = 'wK', 'wR'
+            position[7][0], position[7][4] = '--', '--'
+    elif piece == 'bK' and pos1 == (4, 0):
+        # black
+        if pos2 == (6, 0) and gd.black_castle_short:
+            # short
+            position[0][6], position[0][5] = 'wK', 'wR'
+            position[0][7], position[0][4] = '--', '--'
+        elif pos2 == (2, 0) and gd.black_castle_long:
+            # long
+            position[0][6], position[0][5] = 'wK', 'wR'
+            position[0][7], position[0][4] = '--', '--'
+    else:
+        # normal move
+        position[y2][x2] = piece
+        position[y1][x1] = '--'
 
 
 def display_game_over(screen):
@@ -239,6 +262,3 @@ def update_castling_rights(piece, pos1):
             gd.black_castle_long = False
         elif pos1 == (7, 0):
             gd.black_castle_short = False
-
-
-

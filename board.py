@@ -25,7 +25,7 @@ class Board:
 
     def set_up_board(self):
         # draws the square grid
-        square_color = gd.light_color
+        square_color = gd.dark_color
         for y in range(8):
             square_color = self.toggle_color(square_color)
             for x in range(8):

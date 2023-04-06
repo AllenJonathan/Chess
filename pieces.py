@@ -197,7 +197,7 @@ class King(Piece):
                         piece_class = pieces_dict[piece[1]]
                         if piece_class != King:
                             attacked = piece_class.get_available_moves(position, (x, y))
-                        if pos in attacked:
+                        if attacked and pos in attacked:
                             return True
         return False
 
