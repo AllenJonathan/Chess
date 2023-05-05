@@ -46,8 +46,8 @@ class Move:
                 f.remove_checkmate(cls.board)
                 if f.check_and_castle(cls.board, piece, pos1, pos2, moves):
                     pass
-                elif f.check_and_en_passant(cls.board, piece, pos1, pos2):
-                    print('en passant')
+                elif f.check_and_en_passant(cls.board.position, piece.name, pos1, pos2):
+                    cls.board.place_pieces()
                     pass
                 else:
                     f.update_castling_rights(piece, pos1)

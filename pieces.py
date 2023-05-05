@@ -174,14 +174,14 @@ class King(Piece):
             if gd.white_castle_short and position[7][7] == 'wR' and King.pos_empty(position, [(6, 7), (5, 7)]):
                 if not King.pos_attacked(position, [(6, 7), (5, 7), (4, 7)], 'b'):
                     available_moves.append((6, 7))
-            elif gd.white_castle_long and position[7][0] == 'wR' and King.pos_empty(position, [(1, 7), (2, 7), (3, 7)]):
+            if gd.white_castle_long and position[7][0] == 'wR' and King.pos_empty(position, [(1, 7), (2, 7), (3, 7)]):
                 if not King.pos_attacked(position, [(2, 7), (3, 7), (4, 7)], 'b'):
                     available_moves.append((2, 7))
         if color == 'b':
-            if gd.black_castle_short and position[0][7] == 'bR' and King.pos_empty(position, [(6, 0), (5, 0)]):
+            if gd.black_castle_long and position[0][7] == 'bR' and King.pos_empty(position, [(6, 0), (5, 0)]):
                 if not King.pos_attacked(position, [(6, 0), (5, 0), (4, 0)], 'w'):
                     available_moves.append((6, 0))
-            if gd.black_castle_long and position[0][0] == 'bR' and King.pos_empty(position, [(1, 0), (2, 0), (3, 0)]):
+            if gd.black_castle_short and position[0][0] == 'bR' and King.pos_empty(position, [(1, 0), (2, 0), (3, 0)]):
                 if not King.pos_attacked(position, [(2, 0), (3, 0), (4, 0)], 'w'):
                     available_moves.append((2, 0))
         return available_moves
@@ -267,7 +267,6 @@ class Pawn(Piece):
                 available_moves.append(b2)
             elif gd.black_en_passant == x - 1 and y == 4 and position[y+1][x-1] == '--':
                 available_moves.append(b1)
-
 
 
 pieces_dict = {

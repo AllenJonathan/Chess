@@ -52,15 +52,12 @@ def check_and_castle(board, piece, pos1, pos2, moves):
                 board.update_piece(pos1, pos2)
                 board.update_piece((7, 7), (5, 7))
                 gd.white_castle_short = False
-                print(gd.black_castle_long, gd.black_castle_short, gd.white_castle_long, gd.white_castle_short)
                 return True
             elif pos2 == (2, 7) and pos2 in moves:
                 # long
-                print(pos1, pos2)
                 board.update_piece(pos1, pos2)
                 board.update_piece((0, 7), (3, 7))
                 gd.white_castle_long = False
-                print(gd.black_castle_long, gd.black_castle_short, gd.white_castle_long, gd.white_castle_short)
                 return True
         elif pos1 == (4, 0):
             # black
@@ -180,7 +177,13 @@ def checkmate_filter(position, pos, available_moves):
     for move in available_moves:
         temp_position = copy.deepcopy(position)
         update_piece(temp_position, pos, move)
+
         wc, bc = is_checkmate(temp_position)
+        if position[pos[1]][pos[0]][1] == 'K':
+            print(available_moves)
+            for row in temp_position:
+                print(row)
+            print(wc, bc)
         if (not wc and color == 'w') or (not bc and color == 'b'):
             filtered_moves.append(move)
     return filtered_moves
@@ -191,30 +194,35 @@ def update_piece(position, pos1, pos2):
     x1, y1 = pos1
     x2, y2 = pos2
     piece = position[y1][x1]
-    if piece == 'wK' and pos1 == (4, 7):
-        # white
-        if pos2 == (6, 7) and gd.white_castle_short:
-            # short
-            position[7][6], position[7][5] = 'wK', 'wR'
-            position[7][7], position[7][4] = '--', '--'
-        elif pos2 == (2, 7) and gd.white_castle_long:
-            # long
-            position[7][2], position[7][3] = 'wK', 'wR'
-            position[7][0], position[7][4] = '--', '--'
-    elif piece == 'bK' and pos1 == (4, 0):
-        # black
-        if pos2 == (6, 0) and gd.black_castle_short:
-            # short
-            position[0][6], position[0][5] = 'wK', 'wR'
-            position[0][7], position[0][4] = '--', '--'
-        elif pos2 == (2, 0) and gd.black_castle_long:
-            # long
-            position[0][6], position[0][5] = 'wK', 'wR'
-            position[0][7], position[0][4] = '--', '--'
+    # white short
+    if piece == 'wK' and pos1 == (4, 7) and pos2 == (6, 7) and gd.white_castle_short:
+        position[7][6], position[7][5] = 'wK', 'wR'
+        position[7][7], position[7][4] = '--', '--'
+    # white long
+    elif piece == 'wK' and pos1 == (4, 7) and pos2 == (2, 7) and gd.white_castle_long:
+        # long
+        position[7][2], position[7][3] = 'wK', 'wR'
+        position[7][0], position[7][4] = '--', '--'
+    # black short
+    elif piece == 'bK' and pos1 == (4, 0) and pos2 == (6, 0) and gd.black_castle_short:
+        position[0][6], position[0][5] = 'wK', 'wR'
+        position[0][7], position[0][4] = '--', '--'
+    # black long
+    elif piece == 'bK' and pos1 == (4, 0) and pos2 == (2, 0) and gd.black_castle_long:
+        position[0][6], position[0][5] = 'wK', 'wR'
+        position[0][7], position[0][4] = '--', '--'
+    elif check_and_en_passant(position, piece, pos1, pos2):
+        pass
     else:
         # normal move
-        position[y2][x2] = piece
-        position[y1][x1] = '--'
+        normal_update_piece(position, piece, (x1, y1), (x2, y2))
+
+
+def normal_update_piece(position, piece, pos1, pos2):
+    x1, y1 = pos1
+    x2, y2 = pos2
+    position[y2][x2] = piece
+    position[y1][x1] = '--'
 
 
 def display_game_over(screen):
@@ -279,36 +287,32 @@ def update_en_passant(piece, pos1, pos2):
     gd.black_en_passant = -1
 
 
-def check_and_en_passant(board, piece, pos1, pos2):
+def check_and_en_passant(position, piece, pos1, pos2):
     x1, y1 = pos1
     x2, y2 = pos2
-    wl = (x1-1,3)
-    wr = (x1+1,3)
-    bl = (x1-1,4)
-    br = (x1+1,4)
-    white_left = y1 == 3 and (x1-1,y1-1) == (x2,y2)
-    white_right = y1 == 3 and (x1+1,y1-1) == (x2,y2)
-    black_left = y1 == 4 and (x1-1, y1+1) == (x2, y2)
-    black_right = y1 == 4 and (x1+1, y1+1) == (x2, y2)
-    print(wl, wr, bl, br)
-    if piece.name == 'wp':
+    wl = (x1 - 1, 3)
+    wr = (x1 + 1, 3)
+    bl = (x1 - 1, 4)
+    br = (x1 + 1, 4)
+    white_left = y1 == 3 and (x1 - 1, y1 - 1) == (x2, y2)
+    white_right = y1 == 3 and (x1 + 1, y1 - 1) == (x2, y2)
+    black_left = y1 == 4 and (x1 - 1, y1 + 1) == (x2, y2)
+    black_right = y1 == 4 and (x1 + 1, y1 + 1) == (x2, y2)
+    if piece == 'wp':
         if white_left:
-            print(wl[1], wl[0])
-            board.update_piece(pos1, pos2)
-            board.position[wl[1]][wl[0]] = '--'
-            board.print()
+            normal_update_piece(position, piece, pos1, pos2)
+            position[wl[1]][wl[0]] = '--'
         elif white_right:
-            board.update_piece(pos1, pos2)
-            board.position[wr[1]][wr[0]] = '--'
-    elif piece.name == 'bp':
+            normal_update_piece(position, piece, pos1, pos2)
+            position[wr[1]][wr[0]] = '--'
+    elif piece == 'bp':
         if black_left:
-            board.update_piece(pos1, pos2)
-            board.position[bl[1]][bl[0]] = '--'
+            normal_update_piece(position, piece, pos1, pos2)
+            position[bl[1]][bl[0]] = '--'
         elif black_right:
-            board.update_piece(pos1, pos2)
-            board.position[br[1]][br[0]] = '--'
-    move_made = piece.name in ['wp', 'bp'] and (white_left or white_right or black_right or black_left)
+            normal_update_piece(position, piece, pos1, pos2)
+            position[br[1]][br[0]] = '--'
+    move_made = piece in ['wp', 'bp'] and (white_left or white_right or black_right or black_left)
     if move_made:
-        board.place_pieces()
         return True
     return False

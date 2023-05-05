@@ -6,7 +6,7 @@ from pieces import Rook, Knight, Bishop, Queen, King, Pawn
 
 class Board:
     """
-    Contains
+    Contains logic for initializing and modifying the board.
     """
 
     def __init__(self, screen):
@@ -72,11 +72,13 @@ class Board:
         return square_color
 
     def draw_board(self):
+        # draws all squares
         for col in self.data:
             for square in col:
                 self.draw_square(square)
 
     def draw_square(self, square):
+        # draws an individual square
         rect = pygame.Rect(square.x, square.y, gd.square_length, gd.square_length)
         pygame.draw.rect(self.screen, square.color, rect)
         if square.piece:
@@ -115,6 +117,11 @@ class Board:
 
 
 class Square:
+
+    """
+    Represents a square on the chess board
+    """
+
     hinted_image = pygame.image.load(os.getcwd() + "/res/others/black_circle.png")
     hinted_capture_image = pygame.image.load(os.getcwd() + "/res/others/black_ring.png")
 
